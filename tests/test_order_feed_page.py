@@ -1,9 +1,9 @@
 import allure
-from tests.conftest import main_page, order_feed_page, login_page, driver
 from data.data import Data
+
 class TestOrderFeed:
 
-    @allure.title("При создании нового заказа - значение счетчика 'Выполнено за всё время' увеличивается на 1")
+    @allure.title("При создании нового заказа — значение счётчика 'Выполнено за всё время' увеличивается на 1")
     def test_total_counter_increases(self, driver, main_page, order_feed_page, login_page):
         main_page.open_main()
         main_page.click_login()
@@ -16,7 +16,7 @@ class TestOrderFeed:
         new_total = order_feed_page.get_total_orders()
         assert new_total > initial_total
 
-    @allure.title("При создании нового заказа - значение счетчика 'Выполнено за сегодня' увеличивается на 1")
+    @allure.title("При создании нового заказа — значение счётчика 'Выполнено за сегодня' увеличивается на 1")
     def test_today_counter_increases(self, driver, main_page, order_feed_page, login_page):
         main_page.open_main()
         main_page.click_login()
@@ -29,7 +29,7 @@ class TestOrderFeed:
         new_today = order_feed_page.get_today_orders()
         assert new_today > initial_today
 
-    @allure.title("При создании нового заказа - его номер отображается в блоке 'В работе' на странице 'Лента заказов'")
+    @allure.title("При создании нового заказа — его номер отображается в блоке 'В работе' на странице 'Лента заказов'")
     def test_order_in_progress(self, driver, main_page, order_feed_page, login_page):
         main_page.open_main()
         main_page.click_login()

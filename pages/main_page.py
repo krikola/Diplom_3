@@ -4,10 +4,8 @@ from data.data import Urls
 from locators.main_page_locators import MainPageLocators
 from pages.base_page import BasePage
 
-
 class MainPage(BasePage):
     def __init__(self, driver):
-        self.driver = driver
         super().__init__(driver)
 
     @allure.step("Открыть главную страницу")
@@ -21,7 +19,6 @@ class MainPage(BasePage):
     @allure.step("Кликнуть 'Лента заказов'")
     def click_order_feed(self):
         self.js_click(MainPageLocators.ORDER_FEED_BUTTON)
-
 
     @allure.step("Кликнуть 'Войти в аккаунт'")
     def click_login(self):
@@ -49,7 +46,7 @@ class MainPage(BasePage):
         self.drag_ingredient()
         self.js_click(MainPageLocators.PLACE_ORDER_BUTTON)
         self.wait_until_not_visible(MainPageLocators.MODAL_OPENED_FORM)
-        order_number = self.wait_visible(MainPageLocators.MODAL_ORDER_NUMBER).text
+        order_number = self.get_text(MainPageLocators.MODAL_ORDER_NUMBER)
         self.close_modal()
         return order_number
 
@@ -62,60 +59,10 @@ class MainPage(BasePage):
 
     @allure.step("Перетащить ингредиент в конструктор")
     def drag_ingredient(self):
-        ingredient = self.wait_visible(MainPageLocators.SPECIAL_BUN)
-        target = self.wait_visible(MainPageLocators.CONSTRUCTOR_AREA)
-        self.driver.execute_script("""
-                   const source = arguments[0];
-                   const target = arguments[1];
-
-                   console.log('Starting drag and drop simulation');
-
-                   const dt = new DataTransfer();
-
-                   const dragStart = new DragEvent('dragstart', {
-                       bubbles: true,
-                       cancelable: true,
-                       dataTransfer: dt
-                   });
-                   source.dispatchEvent(dragStart);
-                   console.log('dragstart dispatched');
-
-                   const dragEnter = new DragEvent('dragenter', {
-                       bubbles: true,
-                       cancelable: true,
-                       dataTransfer: dt
-                   });
-                   target.dispatchEvent(dragEnter);
-                   console.log('dragenter dispatched');
-
-                   const dragOver = new DragEvent('dragover', {
-                       bubbles: true,
-                       cancelable: true,
-                       dataTransfer: dt
-                   });
-                   target.dispatchEvent(dragOver);
-                   console.log('dragover dispatched');
-
-                   const drop = new DragEvent('drop', {
-                       bubbles: true,
-                       cancelable: true,
-                       dataTransfer: dt
-                   });
-                   target.dispatchEvent(drop);
-                   console.log('drop dispatched');
-
-                   const dragEnd = new DragEvent('dragend', {
-                       bubbles: true,
-                       cancelable: true,
-                       dataTransfer: dt
-                   });
-                   source.dispatchEvent(dragEnd);
-                   console.log('dragend dispatched');
-
-               """, ingredient, target)
+        self.drag_and_drop(MainPageLocators.SPECIAL_BUN, MainPageLocators.CONSTRUCTOR_AREA)
 
     @allure.step("Получить значение счетчика ингредиента")
     def get_ingredient_counter(self):
-        counter_element = self.driver.find_element(*MainPageLocators.SPECIAL_BUN_CONTAINER)
-        counter = counter_element.find_element(*MainPageLocators.INGREDIENT_COUNTER)
-        return int(counter.text)
+        container = self.wait_visible(MainPageLocators.SPECIAL_BUN_CONTAINER)
+        counter_element = container.find_element(*MainPageLocators.INGREDIENT_COUNTER)
+        return int(counter_element.text)
